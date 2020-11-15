@@ -2,7 +2,8 @@
   (:require [ring.adapter.jetty :as jetty]
             [ring.middleware.reload :refer [wrap-reload]]
             [compojure.core :refer [defroutes GET]]
-            [compojure.route :refer [not-found]]))
+            [compojure.route :refer [not-found]]
+            [ring.handler.dump :refer [handle-dump]]))
 
 (defn greet [req]
   {:status 200
@@ -19,11 +20,35 @@
    :body "Goodbye, Cruel World!"
    :header {}})
 
-(defroutes app
-  (GET "/" [] greet)
-  (GET "/about" [] about)
-  (GET "/goodbye" [] goodbye)
-  (not-found "Page not found."))
+(defn yo [req]
+  {:status 200
+   :body (str "Hello " (-> req :route-params :name) "!")
+   :header {}})
+
+(def operators {"+" +, "-" -, "*" *, ":" /})
+  
+(defn calc [req]
+  (do
+    (println "In Calc")
+    (let [a (Integer/parseInt (get-in req [:route-params :a]))
+          op (get operators (get-in req [:route-params :op]))
+          b (Integer/parseInt (get-in req [:route-params :b]))]
+      (if op
+        {:status 200
+         :body (str a " " op " " b " is " (op a b))
+         :header {}}
+        {:status 404
+         :body (str "Unknown operator: " op)
+         :header {}}))))
+
+  (defroutes app
+    (GET "/" [] greet)
+    (GET "/about" [] about)
+    (GET "/request" [] handle-dump)
+    (GET "/goodbye" [] goodbye)
+    (GET "/yo/:name" [] yo)
+    (GET "/calc/:a/:op/:b" [] calc)
+    (not-found "Page not found."))
 
 (defn -main [port]
   (jetty/run-jetty app                 {:port (Integer. port)}))

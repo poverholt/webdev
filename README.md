@@ -1,10 +1,12 @@
 # webdev
 
-A Clojure library designed to ... well, that part is up to you.
+A Clojure web app used to study Eric Normand's Purely Functionaly TV Web Development LispCast.
 
 ## Usage
 
-FIXME
+To run the server locally, run "lein run 8000" in a terminal and visit "http://localhost:8000/"
+in a web browser. To run it globally, visit "https://pjo-webdev.herokuapp.com/". Heroku keeps
+the files at "https://git.heroku.com/pjo-webdev.git".
 
 ## License
 

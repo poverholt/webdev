@@ -9,6 +9,11 @@
    :body "Hello Superman"
    :header {}})
 
+(defn about [req]
+  {:status 200
+   :body "Superman saves innocent victims."
+   :header {}})
+
 (defn goodbye [req]
   {:status 200
    :body "Goodbye, Cruel World!"
@@ -16,6 +21,7 @@
 
 (defroutes app
   (GET "/" [] greet)
+  (GET "/about" [] about)
   (GET "/goodbye" [] goodbye)
   (not-found "Page not found."))
 

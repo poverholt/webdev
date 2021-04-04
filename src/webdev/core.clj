@@ -56,9 +56,9 @@
     (not-found "Page not found."))
 
 (defn -main [port]
-  (items/create-table db)
+  ;; (items/create-table db)
   (jetty/run-jetty app                 {:port (Integer. port)}))
 
 (defn -dev-main [port]
-  (items/create-table db)
+  ;; (items/create-table db)
   (jetty/run-jetty (wrap-reload #'app) {:port (Integer. port)}))

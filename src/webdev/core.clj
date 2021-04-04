@@ -2,11 +2,12 @@
   (:require [webdev.item.model :as items])
   (:require [ring.adapter.jetty :as jetty]
             [ring.middleware.reload :refer [wrap-reload]]
-            [compojure.core :refer [defroutes GET]]
+            [compojure.core :refer [defroutes ANY GET POST PUT DELETE]]
             [compojure.route :refer [not-found]]
             [ring.handler.dump :refer [handle-dump]]))
 
-(def db "jdbc:postgresql://localhost/webdev?user=postgres&password=")
+(def db "jdbc:postgresql://localhost/webdev?user=pete&password=HIDDEN") ;; Use Machine password
+;; This worked to get past authentication, but got error "This ResultSet is closed" later.
 
 (defn greet [req]
   {:status 200
@@ -55,9 +56,9 @@
     (not-found "Page not found."))
 
 (defn -main [port]
-  ;;(items/create-table db)
+  (items/create-table db)
   (jetty/run-jetty app                 {:port (Integer. port)}))
 
 (defn -dev-main [port]
-  ;;(items/create-table db)
+  (items/create-table db)
   (jetty/run-jetty (wrap-reload #'app) {:port (Integer. port)}))

@@ -5,13 +5,16 @@
 
 (defn create-item [name description]
   (let [id (UUID/randomUUID)]
-    (swap! table #(assoc % id {:id id :name name :description description :checked false}))))
+    (swap! table #(assoc % id {:id id :name name :description description :checked false}))
+    id))
 
 (defn update-item [id checked]
   (swap! table #(assoc-in % [id :checked] checked)))
 
 (defn delete-item [id]
-  (swap! table #(dissoc % id)))
+  (let [exists? (id @table)]
+    (when exists? (swap! table #(dissoc % id)))
+    exists?))
 
 (defn read-items []
   (vals @table))

@@ -9,10 +9,12 @@
     id))
 
 (defn update-item [id checked]
-  (swap! table #(assoc-in % [id :checked] checked)))
+  (let [exists? (get @table id)]
+    (when exists? (swap! table #(assoc-in % [id :checked] checked)))
+    exists?))
 
 (defn delete-item [id]
-  (let [exists? (id @table)]
+  (let [exists? (get @table id)]
     (when exists? (swap! table #(dissoc % id)))
     exists?))
 

@@ -57,6 +57,7 @@
   (GET "/items" [] handler/handle-index-items)
   (POST "/items" [] handler/handle-create-item)
   (DELETE "/items/:item-id" [] handler/handle-delete-item)
+  (PUT "/items/:item-id" [] handler/handle-update-item)
   (GET "/goodbye" [] goodbye)
   (GET "/yo/:name" [] yo)
   (GET "/calc/:a/:op/:b" [] calc)

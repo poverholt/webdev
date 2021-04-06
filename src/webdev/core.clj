@@ -1,7 +1,9 @@
 (ns webdev.core
-  (:require [webdev.item.model :as items])
+  (:require [webdev.item.model :as items]
+            [webdev.item.handler :as handler])
   (:require [ring.adapter.jetty :as jetty]
             [ring.middleware.reload :refer [wrap-reload]]
+            [ring.middleware.params :refer [wrap-params]]
             [compojure.core :refer [defroutes ANY GET POST PUT DELETE]]
             [compojure.route :refer [not-found]]
             [ring.handler.dump :refer [handle-dump]]))
@@ -46,14 +48,24 @@
          :body (str "Unknown operator: " op)
          :header {}}))))
 
-  (defroutes app
-    (GET "/" [] greet)
-    (GET "/about" [] about)
-    (GET "/request" [] handle-dump)
-    (GET "/goodbye" [] goodbye)
-    (GET "/yo/:name" [] yo)
-    (GET "/calc/:a/:op/:b" [] calc)
-    (not-found "Page not found."))
+(defroutes routes
+  (GET "/" [] greet)
+  (GET "/about" [] about)
+  (GET "/request" [] handle-dump)
+  (GET "/items" [] handler/handle-index-items)
+  (GET "/goodbye" [] goodbye)
+  (GET "/yo/:name" [] yo)
+  (GET "/calc/:a/:op/:b" [] calc)
+  (not-found "Page not found."))
+
+(defn wrap-server [hdlr]
+  (fn [req]
+    (assoc-in (hdlr req) [:headers "Server"] "Listronica 9000")))
+
+(def app
+  (wrap-server
+   (wrap-params
+    routes)))
 
 (defn -main [port]
   ;; (items/create-table db)

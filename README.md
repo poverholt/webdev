@@ -4,9 +4,21 @@ A Clojure web app used to study Eric Normand's Purely Functionaly TV Web Develop
 
 ## Usage
 
-To run the server locally, run "lein run 8000" in a terminal and visit "http://localhost:8000/"
-in a web browser. To run it globally, visit "https://pjo-webdev.herokuapp.com/". Heroku keeps
-the files at "https://git.heroku.com/pjo-webdev.git".
+"lein run" will run server on port 10443. Visit "https://127.0.0.1:10443". In an environment
+like Heroku, the environment will provide env variable PORT.
+
+For security reasons, the project does not provide keystore, cert authority, cert key or
+password file. For local development, mkcert, openssl and keytool can be used to generate the
+"keystore.jks" JKS file. Put the password in file "pwd.txt". All these files must be
+put at root directory of project.
+
+### Options
+
+lein run <port> can be used to override the port number. Note that port 443 is an accepted
+number for a production HTTPS/SSL port. Note that 443 is a privileged port and the server
+will throw an exception if the server process does not have root access. There are several
+ways to solve this, but one way it to run "sudo lein run <port>". In development, start the
+repl with "sudo lein repl".
 
 ## License
 

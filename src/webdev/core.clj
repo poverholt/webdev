@@ -1,7 +1,8 @@
 (ns webdev.core
   (:require [webdev.item.model :as items]
             [webdev.item.handler :as handler])
-  (:require [ring.adapter.jetty :as jetty]
+  (:require [clojure.string :as str]
+            [ring.adapter.jetty :as jetty]
             [ring.middleware.reload :refer [wrap-reload]]
             [ring.middleware.params :refer [wrap-params]]
             [ring.middleware.resource :refer [wrap-resource]]
@@ -85,10 +86,20 @@
        routes))
      "static"))))
 
-(defn -main [port]
+(defn jetty-options
+  [port]
+  {:http? false
+   :ssl? true
+   :ssl-port (Integer. (or port (System/getenv "PORT") 10443))
+   :keystore "keystore.jks"
+   :key-password (try (str/trim (slurp "pwd.txt"))
+                      (catch Exception e
+                        (throw (Exception. "pwd.txt file not found."))))})
+  
+(defn -main [& [port]]
   ;; (items/create-table db)
-  (jetty/run-jetty app                 {:port (Integer. port)}))
+  (jetty/run-jetty app                 (jetty-options port)))
 
-(defn -dev-main [port]
+(defn -dev-main [& [port]]
   ;; (items/create-table db)
-  (jetty/run-jetty (wrap-reload #'app) {:port (Integer. port)}))
+  (jetty/run-jetty (wrap-reload #'app) (jetty-options port)))
